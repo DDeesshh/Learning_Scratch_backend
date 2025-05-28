@@ -3,6 +3,8 @@ import nodemailer from "nodemailer";
 export const sendEmail = async (req, res) => {
   try {
     // Получаем все поля напрямую из req.body
+    console.log("req.body:", req.body);
+    console.log("req.files:", req.files);
     const {
       firstName,
       lastName,
@@ -32,9 +34,9 @@ export const sendEmail = async (req, res) => {
       to: "university.curator@gmail.com",
       subject: `Задание от ${firstName} ${lastName} (${level} - урок ${lessonNumber})`,
       text: `Ученик: ${firstName} ${lastName}
-Email: ${email}
-Уровень: ${level}
-Урок: ${lessonNumber}
+      Email: ${email}
+      Уровень: ${level}
+      Урок: ${lessonNumber}
 
 Комментарий:
 ${comment}`,
