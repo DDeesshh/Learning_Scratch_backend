@@ -3,7 +3,6 @@ import multer from "multer";
 import { insertUser } from "../controllers/insertUser.js";
 import { loginUser } from "../controllers/loginUser.js";
 import User from "../models/User.js";
-import { sendEmail } from "../controllers/sendEmail.js";
 
 const router = express.Router();
 const storage = multer.memoryStorage();
@@ -36,10 +35,36 @@ router.post("/progress/submit", async (req, res) => {
 });
 
 router.get("/progress/:email", async (req, res) => {
+  // try {
+  //   const user = await User.findOne({ email: req.params.email });
+  //   if (!user)
+  //     return res.status(404).json({ message: "Пользователь не найден" });
+  //   res.json({ progress: user.progress });
+  // } catch (err) {
+  //   console.error("Ошибка получения прогресса:", err);
+  //   res.status(500).json({ message: "Ошибка сервера" });
+  // }
+
   try {
-    const user = await User.findOne({ email: req.params.email });
-    if (!user)
-      return res.status(404).json({ message: "Пользователь не найден" });
+    let user = await User.findOne({ email: req.params.email });
+
+    // Если пользователь не найден — создаём его
+    if (!user) {
+      user = new User({
+        email: req.params.email,
+        firstName: "Без имени",
+        lastName: "Без фамилии",
+        password: "temporary", // если нужно, можно хешировать или не создавать вовсе
+        progress: {},
+      });
+      await user.save();
+    }
+
+    // Если у пользователя нет progress — инициализируем
+    if (!user.progress) {
+      user.progress = {};
+      await user.save();
+    }
 
     res.json({ progress: user.progress });
   } catch (err) {
