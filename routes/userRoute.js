@@ -2,15 +2,16 @@ import express from "express";
 import multer from "multer";
 import { insertUser } from "../controllers/insertUser.js";
 import { loginUser } from "../controllers/loginUser.js";
+import { sendEmail } from "../controllers/sendEmail.js";
 import User from "../models/User.js";
 
 const router = express.Router();
 const storage = multer.memoryStorage();
-const upload = multer();
+const upload = multer({ storage });
 
 router.post("/register", upload.none(), insertUser);
 router.post("/login", upload.none(), loginUser);
-
+router.post("/email", upload.single("file"), sendEmail);
 router.post("/progress/submit", async (req, res) => {
   const { email, level, lessonId, comment, submittedFile } = req.body;
 
