@@ -4,7 +4,7 @@ export const sendEmail = async (req, res) => {
   try {
     // Получаем все поля напрямую из req.body
     console.log("req.body:", req.body);
-    console.log("req.files:", req.files);
+    console.log("req.file:", req.file);
     const {
       firstName,
       lastName,
