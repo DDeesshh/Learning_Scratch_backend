@@ -44,7 +44,7 @@ router.get("/progress/:email", async (req, res) => {
   //   console.error("Ошибка получения прогресса:", err);
   //   res.status(500).json({ message: "Ошибка сервера" });
   // }
-
+  console.log("Ищу прогресс по email:", req.params.email);
   try {
     let user = await User.findOne({ email: req.params.email });
 
