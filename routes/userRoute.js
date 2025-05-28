@@ -11,7 +11,11 @@ const upload = multer({ storage });
 
 router.post("/register", upload.none(), insertUser);
 router.post("/login", upload.none(), loginUser);
-router.post("/email", upload.single("file"), sendEmail);
+router.post(
+  "/email",
+  upload.fields([{ name: "file", maxCount: 1 }]),
+  sendEmail
+);
 router.post("/progress/submit", async (req, res) => {
   const { email, level, lessonId, comment, submittedFile } = req.body;
 

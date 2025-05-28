@@ -3,8 +3,15 @@ import nodemailer from "nodemailer";
 export const sendEmail = async (req, res) => {
   try {
     // Получаем все поля напрямую из req.body
-    const { firstName, lastName, email, lesson, comment, level } = req.body;
-    const file = req.file;
+    const {
+      firstName,
+      lastName,
+      email,
+      level,
+      comment,
+      lesson: lessonNumber,
+    } = req.body || {};
+    const file = req.files?.file?.[0];
 
     if (!file) {
       return res.status(400).json({ message: "Файл не прикреплён" });
@@ -23,18 +30,18 @@ export const sendEmail = async (req, res) => {
     const mailOptions = {
       from: "university.curator@gmail.com",
       to: "university.curator@gmail.com",
-      subject: `Задание от ${firstName} ${lastName} (${level} - урок ${lesson})`,
+      subject: `Задание от ${firstName} ${lastName} (${level} - урок ${lessonNumber})`,
       text: `Ученик: ${firstName} ${lastName}
 Email: ${email}
 Уровень: ${level}
-Урок: ${lesson}
+Урок: ${lessonNumber}
 
 Комментарий:
 ${comment}`,
       attachments: [
         {
-          filename: file.originalname, // Используем оригинальное имя
-          content: file.buffer, // Используем буфер вместо пути
+          filename: file.originalname || "задание.sb3",
+          content: file.buffer,
         },
       ],
     };
