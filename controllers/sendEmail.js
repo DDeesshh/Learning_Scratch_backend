@@ -13,7 +13,7 @@ export const sendEmail = async (req, res) => {
       comment,
       lesson: lessonNumber,
     } = req.body || {};
-    const file = req.files?.file?.[0];
+    const file = req.file;
 
     if (!file) {
       return res.status(400).json({ message: "Файл не прикреплён" });
