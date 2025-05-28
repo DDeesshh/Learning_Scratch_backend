@@ -7,15 +7,16 @@ import User from "../models/User.js";
 
 const router = express.Router();
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // до 10 МБ
+  },
+});
 
 router.post("/register", upload.none(), insertUser);
 router.post("/login", upload.none(), loginUser);
-router.post(
-  "/email",
-  upload.fields([{ name: "file", maxCount: 1 }]),
-  sendEmail
-);
+router.post("/email", upload.single("file"), sendEmail);
 router.post("/progress/submit", async (req, res) => {
   const { email, level, lessonId, comment, submittedFile } = req.body;
 
