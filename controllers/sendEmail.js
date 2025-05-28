@@ -26,11 +26,13 @@ export const sendEmail = (req, res) => {
     const mailOptions = {
       from: "university.curator@gmail.com",
       to: "university.curator@gmail.com",
-      subject: `Задание от ${firstName} ${lastName} (урок ${lesson})`,
-      text: `Комментарий: ${comment}\nEmail ученика: ${email}`,
+      subject: `Задание от ${firstName} ${lastName} (урок ${
+        lesson || "не определен"
+      })`,
+      text: `Ученик: ${firstName} ${lastName}\nEmail: ${email}\nУрок: ${lesson}\n\nКомментарий:\n${comment}`,
       attachments: [
         {
-          filename: file.originalFilename,
+          filename: file.originalFilename || "attachment.sb3",
           path: file.filepath,
         },
       ],
