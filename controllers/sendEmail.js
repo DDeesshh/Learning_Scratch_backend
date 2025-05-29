@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import fetch from "node-fetch";
 
 export const sendEmail = async (req, res) => {
   try {
