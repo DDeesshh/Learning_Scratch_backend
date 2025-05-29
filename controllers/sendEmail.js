@@ -52,23 +52,29 @@ ${comment}`,
     // Отправка письма
     await transporter.sendMail(mailOptions);
     // Отправка прогресса
-    await fetch(
-      "https://learningscratchbackend-production.up.railway.app/api/user/progress/submit",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          level,
-          lessonId: lessonNumber,
-          comment,
-          submittedFile: file.originalname,
-        }),
-      }
-    );
-    res.status(200).json({ message: "Письмо отправлено успешно" });
+    try {
+      await fetch(
+        "https://learningscratchbackend-production.up.railway.app/api/user/progress/submit",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            level,
+            lessonId: lessonNumber,
+            comment,
+            submittedFile: file.originalname,
+          }),
+        }
+      );
+      const result = await response.json();
+      console.log("Ответ сервера при сохранении прогресса:", result);
+    } catch (err) {
+      console.error("Ошибка при сохранении прогресса:", err);
+    }
+    res.status(200).json({ message: "Письмо отправлено и прогресс сохранён" });
   } catch (error) {
     console.error("Ошибка при отправке письма:", error);
     res.status(500).json({ message: "Ошибка при отправке письма" });
