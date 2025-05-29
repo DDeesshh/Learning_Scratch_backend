@@ -50,6 +50,23 @@ ${comment}`,
 
     // Отправка письма
     await transporter.sendMail(mailOptions);
+    // Отправка прогресса
+    await fetch(
+      "https://learningscratchbackend-production.up.railway.app/api/user/progress/submit",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          level,
+          lessonId: lessonNumber,
+          comment,
+          submittedFile: file.originalname,
+        }),
+      }
+    );
     res.status(200).json({ message: "Письмо отправлено успешно" });
   } catch (error) {
     console.error("Ошибка при отправке письма:", error);
