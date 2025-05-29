@@ -53,36 +53,8 @@ export const sendEmail = async (req, res) => {
     await transporter.sendMail(mailOptions);
     console.log("Письмо отправлено");
 
-    // Сохраняем прогресс
-    try {
-      const response = await fetch(
-        "https://learningscratchbackend-production.up.railway.app/api/user/progress/submit",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email,
-            level,
-            lessonId: lessonNumber,
-            comment,
-            submittedFile: file.originalname,
-          }),
-        }
-      );
-
-      const resultData = await response.json();
-      console.log("Результат сохранения прогресса:", resultData);
-    } catch (err) {
-      console.error("Ошибка при сохранении прогресса:", err);
-      return res
-        .status(500)
-        .json({
-          message: "Письмо отправлено, но не удалось сохранить прогресс",
-        });
-    }
-
     // Финальный ответ
-    res.status(200).json({ message: "Письмо отправлено и прогресс сохранён" });
+    res.status(200).json({ message: "Письмо отправлено" });
   } catch (error) {
     console.error("Ошибка при отправке письма:", error);
     res.status(500).json({ message: "Ошибка при отправке письма" });
