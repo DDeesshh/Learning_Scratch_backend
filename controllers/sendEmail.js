@@ -1,6 +1,5 @@
 import nodemailer from "nodemailer";
-// import fetch from "node-fetch";
-import User from "../models/User.js";
+import fetch from "node-fetch";
 
 export const sendEmail = async (req, res) => {
   try {
@@ -50,21 +49,39 @@ export const sendEmail = async (req, res) => {
       ],
     };
 
-    // Отправка письма
+    // Отправляем письмо
     await transporter.sendMail(mailOptions);
-    const user = await User.findOne({ email });
-    if (!user) {
-      console.error("Пользователь не найден при отправке прогресса");
-    } else {
-      if (!user.progress[level]) user.progress[level] = {};
-      user.progress[level][lessonNumber] = {
-        status: "pending",
-        comment,
-        submittedFile: file.originalname,
-      };
-      await user.save();
+    console.log("Письмо отправлено");
+
+    // Сохраняем прогресс
+    try {
+      const response = await fetch(
+        "https://learningscratchbackend-production.up.railway.app/api/user/progress/submit",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            level,
+            lessonId: lessonNumber,
+            comment,
+            submittedFile: file.originalname,
+          }),
+        }
+      );
+
+      const resultData = await response.json();
+      console.log("Результат сохранения прогресса:", resultData);
+    } catch (err) {
+      console.error("Ошибка при сохранении прогресса:", err);
+      return res
+        .status(500)
+        .json({
+          message: "Письмо отправлено, но не удалось сохранить прогресс",
+        });
     }
 
+    // Финальный ответ
     res.status(200).json({ message: "Письмо отправлено и прогресс сохранён" });
   } catch (error) {
     console.error("Ошибка при отправке письма:", error);
